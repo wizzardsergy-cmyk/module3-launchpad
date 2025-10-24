@@ -73,16 +73,6 @@ export const LaunchCard = ({ launch, index, onUpdate, onDelete }: LaunchCardProp
         </div>
         
         <div>
-          <label className="text-sm font-medium text-muted-foreground">Замечания по запуску</label>
-          <Textarea
-            value={launch.remarks}
-            onChange={(e) => onUpdate({ ...launch, remarks: e.target.value })}
-            placeholder="Введите замечания..."
-            rows={3}
-          />
-        </div>
-        
-        <div>
           <label className="text-sm font-medium text-muted-foreground">Результаты запуска</label>
           <Textarea
             value={launch.results}

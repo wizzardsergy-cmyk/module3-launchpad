@@ -23,7 +23,6 @@ export const DaySection = ({ dayData, onUpdate }: DaySectionProps) => {
       id: Date.now().toString(),
       startTime: "",
       endTime: "",
-      remarks: "",
       results: "",
       comments: [],
     };

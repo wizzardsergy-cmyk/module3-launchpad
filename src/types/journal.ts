@@ -18,7 +18,6 @@ export interface Launch {
   id: string;
   startTime: string;
   endTime: string;
-  remarks: string;
   results: string;
   comments: Comment[];
 }
