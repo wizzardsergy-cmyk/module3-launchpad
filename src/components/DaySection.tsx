@@ -25,11 +25,25 @@ export const DaySection = ({ dayData, onUpdate }: DaySectionProps) => {
       endTime: "",
       results: "",
       comments: [],
+      saved: false,
     };
     
     onUpdate({
       ...dayData,
       launches: [...dayData.launches, newLaunch],
+    });
+  };
+
+  const handleSaveLaunch = (index: number) => {
+    const newLaunches = [...dayData.launches];
+    newLaunches[index] = {
+      ...newLaunches[index],
+      saved: true,
+    };
+    
+    onUpdate({
+      ...dayData,
+      launches: newLaunches,
     });
   };
 
@@ -103,7 +117,12 @@ export const DaySection = ({ dayData, onUpdate }: DaySectionProps) => {
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold">Запуски модуля</h3>
-              <Button onClick={handleAddLaunch} size="sm" className="gap-2">
+              <Button 
+                onClick={handleAddLaunch} 
+                size="sm" 
+                className="gap-2"
+                disabled={dayData.launches.some(l => !l.saved)}
+              >
                 <Plus className="h-4 w-4" />
                 Добавить запуск
               </Button>
@@ -116,6 +135,7 @@ export const DaySection = ({ dayData, onUpdate }: DaySectionProps) => {
                   index={index}
                   onUpdate={(updated) => handleUpdateLaunch(index, updated)}
                   onDelete={() => handleDeleteLaunch(index)}
+                  onSave={() => handleSaveLaunch(index)}
                 />
               ))}
             </div>

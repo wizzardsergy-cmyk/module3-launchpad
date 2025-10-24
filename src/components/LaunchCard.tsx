@@ -11,9 +11,10 @@ interface LaunchCardProps {
   index: number;
   onUpdate: (updatedLaunch: Launch) => void;
   onDelete: () => void;
+  onSave: () => void;
 }
 
-export const LaunchCard = ({ launch, index, onUpdate, onDelete }: LaunchCardProps) => {
+export const LaunchCard = ({ launch, index, onUpdate, onDelete, onSave }: LaunchCardProps) => {
   const handleAddComment = (text: string, author: string) => {
     const newComment: Comment = {
       id: Date.now().toString(),
@@ -32,6 +33,12 @@ export const LaunchCard = ({ launch, index, onUpdate, onDelete }: LaunchCardProp
       ...launch,
       comments: launch.comments.filter(c => c.id !== commentId),
     });
+  };
+
+  const handleSave = () => {
+    if (launch.startTime && launch.endTime && launch.results) {
+      onSave();
+    }
   };
 
   return (
@@ -53,40 +60,65 @@ export const LaunchCard = ({ launch, index, onUpdate, onDelete }: LaunchCardProp
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">Начало</label>
-            <Input
-              type="time"
-              value={launch.startTime}
-              onChange={(e) => onUpdate({ ...launch, startTime: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">Окончание</label>
-            <Input
-              type="time"
-              value={launch.endTime}
-              onChange={(e) => onUpdate({ ...launch, endTime: e.target.value })}
-            />
-          </div>
-        </div>
-        
-        <div>
-          <label className="text-sm font-medium text-muted-foreground">Результаты запуска</label>
-          <Textarea
-            value={launch.results}
-            onChange={(e) => onUpdate({ ...launch, results: e.target.value })}
-            placeholder="Введите результаты..."
-            rows={3}
-          />
-        </div>
+        {!launch.saved ? (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Начало</label>
+                <Input
+                  type="time"
+                  value={launch.startTime}
+                  onChange={(e) => onUpdate({ ...launch, startTime: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Окончание</label>
+                <Input
+                  type="time"
+                  value={launch.endTime}
+                  onChange={(e) => onUpdate({ ...launch, endTime: e.target.value })}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Результаты запуска</label>
+              <Textarea
+                value={launch.results}
+                onChange={(e) => onUpdate({ ...launch, results: e.target.value })}
+                placeholder="Введите результаты..."
+                rows={3}
+              />
+            </div>
 
-        <CommentSection 
-          comments={launch.comments} 
-          onAddComment={handleAddComment}
-          onDeleteComment={handleDeleteComment}
-        />
+            <Button 
+              onClick={handleSave} 
+              className="w-full"
+              disabled={!launch.startTime || !launch.endTime || !launch.results}
+            >
+              Добавить
+            </Button>
+          </>
+        ) : (
+          <>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Время:</span>
+                <span className="font-medium">{launch.startTime} - {launch.endTime}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground block mb-1">Результаты:</span>
+                <p className="whitespace-pre-wrap bg-muted p-2 rounded">{launch.results}</p>
+              </div>
+            </div>
+
+            <CommentSection 
+              comments={launch.comments} 
+              onAddComment={handleAddComment}
+              onDeleteComment={handleDeleteComment}
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );

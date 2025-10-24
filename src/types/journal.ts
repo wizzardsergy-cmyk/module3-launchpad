@@ -20,6 +20,7 @@ export interface Launch {
   endTime: string;
   results: string;
   comments: Comment[];
+  saved: boolean;
 }
 
 export interface DayData {
