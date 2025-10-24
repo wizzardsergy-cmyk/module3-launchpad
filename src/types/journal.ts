@@ -25,7 +25,6 @@ export interface Launch {
 
 export interface DayData {
   date: string;
-  tests: string;
   launches: Launch[];
   remarks: Remark[];
 }

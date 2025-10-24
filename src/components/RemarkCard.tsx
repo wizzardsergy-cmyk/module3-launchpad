@@ -3,16 +3,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Check } from "lucide-react";
+import { Check, Trash2 } from "lucide-react";
 import { CommentSection } from "./CommentSection";
 import { cn } from "@/lib/utils";
 
 interface RemarkCardProps {
   remark: Remark;
   onUpdate: (updatedRemark: Remark) => void;
+  onDelete: () => void;
 }
 
-export const RemarkCard = ({ remark, onUpdate }: RemarkCardProps) => {
+export const RemarkCard = ({ remark, onUpdate, onDelete }: RemarkCardProps) => {
   const handleAddComment = (text: string, author: string) => {
     const newComment: Comment = {
       id: Date.now().toString(),
@@ -33,6 +34,13 @@ export const RemarkCard = ({ remark, onUpdate }: RemarkCardProps) => {
     });
   };
 
+  const handleDeleteComment = (commentId: string) => {
+    onUpdate({
+      ...remark,
+      comments: remark.comments.filter(c => c.id !== commentId),
+    });
+  };
+
   return (
     <Card
       className={cn(
@@ -48,6 +56,14 @@ export const RemarkCard = ({ remark, onUpdate }: RemarkCardProps) => {
             <Check className="h-5 w-5 text-completed flex-shrink-0 mt-0.5" />
           )}
           <p className="text-sm flex-1">{remark.text}</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onDelete}
+            className="h-6 w-6 p-0 flex-shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
         </div>
 
         {remark.completed ? (
@@ -83,7 +99,11 @@ export const RemarkCard = ({ remark, onUpdate }: RemarkCardProps) => {
           </Button>
         )}
 
-        <CommentSection comments={remark.comments} onAddComment={handleAddComment} />
+        <CommentSection 
+          comments={remark.comments} 
+          onAddComment={handleAddComment}
+          onDeleteComment={handleDeleteComment}
+        />
       </CardContent>
     </Card>
   );

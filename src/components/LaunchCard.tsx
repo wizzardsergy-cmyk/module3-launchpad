@@ -2,16 +2,18 @@ import { Launch, Comment } from "@/types/journal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, Trash2 } from "lucide-react";
 import { CommentSection } from "./CommentSection";
 
 interface LaunchCardProps {
   launch: Launch;
   index: number;
   onUpdate: (updatedLaunch: Launch) => void;
+  onDelete: () => void;
 }
 
-export const LaunchCard = ({ launch, index, onUpdate }: LaunchCardProps) => {
+export const LaunchCard = ({ launch, index, onUpdate, onDelete }: LaunchCardProps) => {
   const handleAddComment = (text: string, author: string) => {
     const newComment: Comment = {
       id: Date.now().toString(),
@@ -25,13 +27,30 @@ export const LaunchCard = ({ launch, index, onUpdate }: LaunchCardProps) => {
     });
   };
 
+  const handleDeleteComment = (commentId: string) => {
+    onUpdate({
+      ...launch,
+      comments: launch.comments.filter(c => c.id !== commentId),
+    });
+  };
+
   return (
     <Card className="border-primary/20">
       <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Clock className="h-4 w-4" />
-          Запуск #{index + 1}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            Запуск #{index + 1}
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onDelete}
+            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
@@ -73,7 +92,11 @@ export const LaunchCard = ({ launch, index, onUpdate }: LaunchCardProps) => {
           />
         </div>
 
-        <CommentSection comments={launch.comments} onAddComment={handleAddComment} />
+        <CommentSection 
+          comments={launch.comments} 
+          onAddComment={handleAddComment}
+          onDeleteComment={handleDeleteComment}
+        />
       </CardContent>
     </Card>
   );

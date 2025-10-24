@@ -33,7 +33,6 @@ const Index = () => {
   const getDayData = (date: string): DayData => {
     return journalData[date] || {
       date,
-      tests: "",
       launches: [],
       remarks: [],
     };
