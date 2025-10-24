@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { formatDate } from "@/lib/dates";
 import { LaunchCard } from "./LaunchCard";
 import { RemarkCard } from "./RemarkCard";
@@ -12,9 +12,10 @@ import { RemarkCard } from "./RemarkCard";
 interface DaySectionProps {
   dayData: DayData;
   onUpdate: (updatedData: DayData) => void;
+  onDelete: () => void;
 }
 
-export const DaySection = ({ dayData, onUpdate }: DaySectionProps) => {
+export const DaySection = ({ dayData, onUpdate, onDelete }: DaySectionProps) => {
   const [newRemarkText, setNewRemarkText] = useState("");
   const [showRemarkForm, setShowRemarkForm] = useState(false);
 
@@ -110,7 +111,17 @@ export const DaySection = ({ dayData, onUpdate }: DaySectionProps) => {
       
       <Card className="bg-card">
         <CardHeader className="bg-primary/5 border-b">
-          <CardTitle className="text-xl">{formatDate(dayData.date)}</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl">{formatDate(dayData.date)}</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDelete}
+              className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
           {/* Launches Section */}

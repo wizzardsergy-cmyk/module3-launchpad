@@ -30,6 +30,14 @@ const Index = () => {
     }));
   };
 
+  const handleDeleteDay = (date: string) => {
+    setJournalData(prev => {
+      const newData = { ...prev };
+      delete newData[date];
+      return newData;
+    });
+  };
+
   const getDayData = (date: string): DayData => {
     return journalData[date] || {
       date,
@@ -67,6 +75,7 @@ const Index = () => {
               key={date}
               dayData={getDayData(date)}
               onUpdate={(updatedData) => handleUpdateDay(date, updatedData)}
+              onDelete={() => handleDeleteDay(date)}
             />
           ))}
         </div>
