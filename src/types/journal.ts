@@ -9,6 +9,7 @@ export interface Remark {
   id: string;
   text: string;
   completed: boolean;
+  inProgress?: boolean;
   completedBy?: string;
   completedAction?: string;
   comments: Comment[];

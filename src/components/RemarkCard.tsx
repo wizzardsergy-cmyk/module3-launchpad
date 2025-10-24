@@ -27,10 +27,29 @@ export const RemarkCard = ({ remark, onUpdate, onDelete }: RemarkCardProps) => {
     });
   };
 
-  const handleComplete = () => {
+  const handleStartComplete = () => {
     onUpdate({
       ...remark,
-      completed: true,
+      inProgress: true,
+    });
+  };
+
+  const handleSaveComplete = () => {
+    if (remark.completedBy && remark.completedAction) {
+      onUpdate({
+        ...remark,
+        completed: true,
+        inProgress: false,
+      });
+    }
+  };
+
+  const handleCancelComplete = () => {
+    onUpdate({
+      ...remark,
+      inProgress: false,
+      completedBy: undefined,
+      completedAction: undefined,
     });
   };
 
@@ -67,32 +86,66 @@ export const RemarkCard = ({ remark, onUpdate, onDelete }: RemarkCardProps) => {
         </div>
 
         {remark.completed ? (
-          <div className="space-y-2">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Кто устранил:</label>
-              <Input
-                value={remark.completedBy || ""}
-                onChange={(e) => onUpdate({ ...remark, completedBy: e.target.value })}
-                placeholder="ФИО"
-                className="mt-1"
-              />
+          <>
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="text-muted-foreground">Кто устранил:</span>
+                <p className="font-medium">{remark.completedBy}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Что сделал:</span>
+                <p className="whitespace-pre-wrap bg-muted p-2 rounded mt-1">{remark.completedAction}</p>
+              </div>
             </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Что сделал:</label>
-              <Textarea
-                value={remark.completedAction || ""}
-                onChange={(e) => onUpdate({ ...remark, completedAction: e.target.value })}
-                placeholder="Описание выполненных работ"
-                rows={2}
-                className="mt-1"
-              />
+          </>
+        ) : remark.inProgress ? (
+          <>
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Кто устранил:</label>
+                <Input
+                  value={remark.completedBy || ""}
+                  onChange={(e) => onUpdate({ ...remark, completedBy: e.target.value })}
+                  placeholder="ФИО"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Что сделал:</label>
+                <Textarea
+                  value={remark.completedAction || ""}
+                  onChange={(e) => onUpdate({ ...remark, completedAction: e.target.value })}
+                  placeholder="Описание выполненных работ"
+                  rows={2}
+                  className="mt-1"
+                />
+              </div>
             </div>
-          </div>
+            <div className="flex gap-2">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleSaveComplete}
+                className="flex-1 bg-completed text-completed-foreground hover:bg-completed/90"
+                disabled={!remark.completedBy || !remark.completedAction}
+              >
+                Сохранить
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCancelComplete}
+                className="flex-1"
+              >
+                Отмена
+              </Button>
+            </div>
+          </>
         ) : (
           <Button
             variant="outline"
             size="sm"
-            onClick={handleComplete}
+            onClick={handleStartComplete}
             className="w-full border-completed text-completed hover:bg-completed hover:text-completed-foreground"
           >
             Выполнено
