@@ -9,8 +9,11 @@ import { FileText } from "lucide-react";
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [journalData, setJournalData] = useState<JournalData>({});
+  const [deletedDates, setDeletedDates] = useState<Set<string>>(new Set());
   
-  const dates = generateDateRange("2025-10-24", "2025-12-31");
+  const dates = generateDateRange("2025-10-24", "2025-12-31").filter(
+    date => !deletedDates.has(date)
+  );
 
   useEffect(() => {
     const data = loadJournalData();
@@ -37,6 +40,7 @@ const Index = () => {
       saveJournalData(newData);
       return newData;
     });
+    setDeletedDates(prev => new Set(prev).add(date));
   };
 
   const getDayData = (date: string): DayData => {
