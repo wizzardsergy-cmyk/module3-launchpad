@@ -34,6 +34,7 @@ const Index = () => {
     setJournalData(prev => {
       const newData = { ...prev };
       delete newData[date];
+      saveJournalData(newData);
       return newData;
     });
   };
