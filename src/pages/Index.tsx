@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { DaySection } from "@/components/DaySection";
 import { generateDateRange } from "@/lib/dates";
-import { loadJournalData, saveJournalData } from "@/lib/storage";
+import { loadJournalData, saveJournalData, loadDeletedDates, saveDeletedDates } from "@/lib/storage";
 import { JournalData, DayData } from "@/types/journal";
 import { FileText } from "lucide-react";
 
@@ -17,7 +17,9 @@ const Index = () => {
 
   useEffect(() => {
     const data = loadJournalData();
+    const deleted = loadDeletedDates();
     setJournalData(data);
+    setDeletedDates(deleted);
   }, []);
 
   useEffect(() => {
@@ -40,7 +42,11 @@ const Index = () => {
       saveJournalData(newData);
       return newData;
     });
-    setDeletedDates(prev => new Set(prev).add(date));
+    setDeletedDates(prev => {
+      const newDeleted = new Set(prev).add(date);
+      saveDeletedDates(newDeleted);
+      return newDeleted;
+    });
   };
 
   const getDayData = (date: string): DayData => {

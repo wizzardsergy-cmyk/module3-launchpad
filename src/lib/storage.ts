@@ -1,6 +1,7 @@
 import { JournalData } from "@/types/journal";
 
 const STORAGE_KEY = "module3_journal_data";
+const DELETED_DATES_KEY = "module3_deleted_dates";
 
 export const loadJournalData = (): JournalData => {
   try {
@@ -17,5 +18,23 @@ export const saveJournalData = (data: JournalData): void => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
     console.error("Error saving journal data:", error);
+  }
+};
+
+export const loadDeletedDates = (): Set<string> => {
+  try {
+    const data = localStorage.getItem(DELETED_DATES_KEY);
+    return data ? new Set(JSON.parse(data)) : new Set();
+  } catch (error) {
+    console.error("Error loading deleted dates:", error);
+    return new Set();
+  }
+};
+
+export const saveDeletedDates = (dates: Set<string>): void => {
+  try {
+    localStorage.setItem(DELETED_DATES_KEY, JSON.stringify(Array.from(dates)));
+  } catch (error) {
+    console.error("Error saving deleted dates:", error);
   }
 };
